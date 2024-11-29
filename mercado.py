@@ -28,29 +28,37 @@ class Mercado:
         self.precoProduto.pack()
         
         ttk.Label(janela, text="Digite quantidade do produto").pack()
-        self.quantidadeProduto  = ttk.Entry(janela)
-        self.quantidadeProduto .pack()
+        self.quantidadeProduto = ttk.Entry(janela)
+        self.quantidadeProduto.pack()
         
         self.botao = ttk.Button(janela, text="Cadastrar", command=self.cadastroProduto)
         self.botao.pack()
         ttk.Button(self.janela, text="Voltar", command=self.voltar_menu).pack(pady=5)
         
         
+        self.cadastrado = ttk.Label(text="")
+        self.cadastrado.pack()
+        
+        print(self.dados)
+        
     def cadastroProduto(self):
         nome = self.nomeProduto.get()
         preco = float(self.precoProduto.get())
         quantidade = int(self.quantidadeProduto.get())
-            
-    def exibir_produtos(self):
         
+        self.dados.append((nome, preco, quantidade))   
+        self.cadastrado.config(janela, text=f"{self.dados[nome]} cadastrado com sucesso!") 
+        print(self.dados)  
+             
+    def exibir_produtos(self):
+
         for widget in self.janela.winfo_children():
             widget.destroy()
-
-        # Criando o Treeview
+            
+        print(self.dados)
         self.tree = ttk.Treeview(janela, columns=("Nome", "Preco", "Quantidade"), show="headings", height=5)
         self.tree.place(relx = 0.5, rely = 0.5, anchor = "center")
 
-        # Configurando colunas
         self.tree.heading("Nome", text="Nome")
         self.tree.heading("Preco", text="Preço")
         self.tree.heading("Quantidade", text="Quantidade")
@@ -71,7 +79,7 @@ class Mercado:
     
     
     def voltar_menu(self):
-        # Limpa a janela e volta ao menu principal
+        
         for widget in self.janela.winfo_children():
             widget.destroy()
         self.__init__(self.janela)
