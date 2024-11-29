@@ -1,12 +1,20 @@
 import tkinter as tk
 from tkinter import  ttk
+import random
 
 class Mercado:
     def __init__(self, janela):
         self.janela = janela
         self.janela.title("Mercado")
         self.dados = []
+        self.codigoBarra = 0
+        self.Interface()
+
+    def Interface(self):
         
+        for widget in self.janela.winfo_children():
+            widget.destroy()
+            
         self.cadastroProdutos = ttk.Button(janela, text="🏷️ Cadastro de produtos", command=self.adicionar_produto)
         self.cadastroProdutos.place(relx = 0.5, rely = 0.4, anchor = "center")
         self.listaProdutos = ttk.Button(janela, text="📋 Exibição da lista de produtos cadastrados", command=self.exibir_produtos)
@@ -33,59 +41,99 @@ class Mercado:
         
         self.botao = ttk.Button(janela, text="Cadastrar", command=self.cadastroProduto)
         self.botao.pack()
-        ttk.Button(self.janela, text="Voltar", command=self.voltar_menu).pack(pady=5)
+        ttk.Button(self.janela, text="Voltar", command=self.Interface).pack(pady=5)
         
-        
-        self.cadastrado = ttk.Label(text="")
+        self.cadastrado = tk.Label(janela, text="")
         self.cadastrado.pack()
         
-        print(self.dados)
-        
-    def cadastroProduto(self):
+    def cadastroProduto(self): 
         nome = self.nomeProduto.get()
         preco = float(self.precoProduto.get())
         quantidade = int(self.quantidadeProduto.get())
+        codigo = self.codigoBarra
+        codigo += 1
         
-        self.dados.append((nome, preco, quantidade))   
-        self.cadastrado.config(janela, text=f"{self.dados[nome]} cadastrado com sucesso!") 
-        print(self.dados)  
+        self.dados.append((nome, preco, quantidade, codigo))   
+        self.cadastrado.config(text=f"Item: {nome} cadastrado com sucesso!") 
              
     def exibir_produtos(self):
-
+        
         for widget in self.janela.winfo_children():
             widget.destroy()
             
-        print(self.dados)
-        self.tree = ttk.Treeview(janela, columns=("Nome", "Preco", "Quantidade"), show="headings", height=5)
+        self.tree = ttk.Treeview(janela, columns=("Nome", "Preco", "Quantidade", "Codigo"), show="headings", height=5)
         self.tree.place(relx = 0.5, rely = 0.5, anchor = "center")
 
         self.tree.heading("Nome", text="Nome")
         self.tree.heading("Preco", text="Preço")
         self.tree.heading("Quantidade", text="Quantidade")
+        self.tree.heading("Codigo", text="Codigo")
         self.tree.column("Nome", width=150, anchor=tk.CENTER)
         self.tree.column("Preco", width=100, anchor=tk.CENTER)
         self.tree.column("Quantidade", width=100, anchor=tk.CENTER)
+        self.tree.column("Codigo", width=100, anchor=tk.CENTER)
         
-        ttk.Button(self.janela, text="Voltar", command=self.voltar_menu).place(relx = 0.5, rely = 0.7, anchor = "center")
+        for nome, preco, quantidade, codigo in self.dados:
+            self.tree.insert("", tk.END, values=(nome, preco, quantidade, codigo))
+        
+        ttk.Button(self.janela, text="Voltar", command=self.Interface).place(relx = 0.5, rely = 0.7, anchor = "center")
     
     def realizar_venda(self):
         
         for widget in self.janela.winfo_children():
             widget.destroy()
-        
-        ttk.Button(self.janela, text="Voltar", command=self.voltar_menu).pack(pady=5)
-  
-  
-    
-    
-    def voltar_menu(self):
-        
-        for widget in self.janela.winfo_children():
-            widget.destroy()
-        self.__init__(self.janela)
-        
-          
+            
+        self.tree = ttk.Treeview(janela, columns=("Nome", "Preco", "Quantidade", "Codigo"), show="headings", height=5)
+        self.tree.place(relx = 0.5, rely = 0.5, anchor = "center")
 
+        self.tree.heading("Nome", text="Nome")
+        self.tree.heading("Preco", text="Preço")
+        self.tree.heading("Quantidade", text="Quantidade")
+        self.tree.heading("Codigo", text="Codigo")
+        self.tree.column("Nome", width=150, anchor=tk.CENTER)
+        self.tree.column("Preco", width=100, anchor=tk.CENTER)
+        self.tree.column("Quantidade", width=100, anchor=tk.CENTER)
+        self.tree.column("Codigo", width=100, anchor=tk.CENTER)
+        
+        for nome, preco, quantidade, codigo in self.dados:
+            self.tree.insert("", tk.END, values=(nome, preco, quantidade, codigo))
+
+        ttk.Label(janela, text="Digite o codigo do produto").pack()
+        self.codigoProduto = ttk.Entry(janela)
+        self.codigoProduto.pack(pady=10)
+        
+        ttk.Label(janela, text="Digite a quantidade do produto").pack()
+        self.quantidadeProduto = ttk.Entry(janela)
+        self.quantidadeProduto.pack(pady=10)
+        
+        self.botao = ttk.Button(janela, text="Comprar", command=self.compra_realizada)
+        self.botao.pack()
+        
+        ttk.Button(self.janela, text="Voltar", command=self.Interface).pack()
+        
+        self.resultado = tk.Label(janela, text="")
+        self.resultado.pack()
+
+    def compra_realizada(self):
+        try:
+            cb = int(self.codigoProduto.get())
+            quantidadeSocilicitada = int(self.quantidadeProduto.get())
+            
+            for self.nome, self.preco, self.quantidade, self.codigo in self.dados:
+            
+                if self.codigo == cb:
+                    if quantidadeSocilicitada > self.quantidade:
+                        self.resultado.config(text=f"O numero é maior que a quantidade")
+                    else:
+                        self.quantidade -= quantidadeSocilicitada
+                        self.resultado.config(text=f"Compra realizada")
+                else:
+                    self.resultado.config(text=f"Esse codigo não existe!")
+                
+        except ValueError as error:
+            self.resultado.config(text=f"Insira um numero!")
+            print(f"Erro: {error}")
+        
 if __name__ == "__main__":
     janela = tk.Tk()
     janela.state("zoomed")
