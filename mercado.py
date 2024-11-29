@@ -50,8 +50,8 @@ class Mercado:
         nome = self.nomeProduto.get()
         preco = float(self.precoProduto.get())
         quantidade = int(self.quantidadeProduto.get())
+        self.codigoBarra += 1
         codigo = self.codigoBarra
-        codigo += 1
         
         self.dados.append((nome, preco, quantidade, codigo))   
         self.cadastrado.config(text=f"Item: {nome} cadastrado com sucesso!") 
@@ -119,20 +119,19 @@ class Mercado:
             cb = int(self.codigoProduto.get())
             quantidadeSocilicitada = int(self.quantidadeProduto.get())
             
-            for self.nome, self.preco, self.quantidade, self.codigo in self.dados:
+            for index, (nome, preco, quantidade, codigo) in self.dados:
             
-                if self.codigo == cb:
-                    if quantidadeSocilicitada > self.quantidade:
+                if codigo == cb:
+                    if quantidadeSocilicitada > quantidade:
                         self.resultado.config(text=f"O numero é maior que a quantidade")
                     else:
-                        self.quantidade -= quantidadeSocilicitada
+                        self.dados[index] = (nome, preco, quantidade - quantidadeSocilicitada, codigo)
                         self.resultado.config(text=f"Compra realizada")
                 else:
                     self.resultado.config(text=f"Esse codigo não existe!")
-                
-        except ValueError as error:
+      
+        except ValueError:
             self.resultado.config(text=f"Insira um numero!")
-            print(f"Erro: {error}")
         
 if __name__ == "__main__":
     janela = tk.Tk()
