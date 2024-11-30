@@ -7,9 +7,9 @@ class Mercado:
         self.janela.title("Mercado")
         self.dados = []
         self.codigoBarra = 0
-        self.Interface()
+        self.Loja()
 
-    def Interface(self):
+    def Loja(self):
         
         for widget in self.janela.winfo_children():
             widget.destroy()
@@ -29,23 +29,23 @@ class Mercado:
         for widget in self.janela.winfo_children():
             widget.destroy()
             
-        ttk.Label(janela, text="Digite nome do produto").pack()
+        ttk.Label(janela, text="Digite nome do produto:").place(relx = 0.4, rely = 0.4, anchor = "center")
         self.nomeProduto = ttk.Entry(janela)
-        self.nomeProduto.pack()
+        self.nomeProduto.place(relx = 0.5, rely = 0.4, anchor = "center")
         
-        ttk.Label(janela, text="Digite preco do produto").pack()
+        ttk.Label(janela, text="Digite preco do produto:").place(relx = 0.4, rely = 0.5, anchor = "center")
         self.precoProduto = ttk.Entry(janela)
-        self.precoProduto.pack()
+        self.precoProduto.place(relx = 0.5, rely = 0.5, anchor = "center")
         
-        ttk.Label(janela, text="Digite quantidade do produto").pack()
+        ttk.Label(janela, text="Digite quantidade do produto:").place(relx = 0.4, rely = 0.6, anchor = "center")
         self.quantidadeProduto = ttk.Entry(janela)
-        self.quantidadeProduto.pack()
+        self.quantidadeProduto.place(relx = 0.5, rely = 0.6, anchor = "center")
         
         self.cadastrar = ttk.Button(janela, text="Cadastrar", command=self.cadastroProduto)
-        self.cadastrar.pack()
+        self.cadastrar.place(relx = 0.5, rely = 0.7, anchor = "center")
         self.cadastrar.configure(cursor='hand2')
-        self.voltar = ttk.Button(janela, text="Voltar", command=self.Interface)
-        self.voltar.pack()
+        self.voltar = ttk.Button(janela, text="Voltar", command=self.Loja)
+        self.voltar.place(relx = 0.5, rely = 0.8, anchor = "center")
         self.voltar.configure(cursor='hand2')
              
         self.cadastrado = tk.Label(janela, text="")
@@ -81,8 +81,8 @@ class Mercado:
         for nome, preco, quantidade, codigo in self.dados:
             self.tree.insert("", tk.END, values=(nome, preco, quantidade, codigo))
         
-        self.voltar = ttk.Button(janela, text="Voltar", command=self.Interface)
-        self.voltar.pack()
+        self.voltar = ttk.Button(janela, text="Voltar", command=self.Loja)
+        self.voltar.place(relx = 0.5, rely = 0.6, anchor = "center")
         self.voltar.configure(cursor='hand2')
     
     def realizar_venda(self):
@@ -117,8 +117,8 @@ class Mercado:
         self.comprar.pack()
         self.comprar.configure(cursor='hand2')
         
-        self.voltar = ttk.Button(janela, text="Voltar", command=self.Interface)
-        self.voltar.pack()
+        self.voltar = ttk.Button(janela, text="Voltar", command=self.Loja)
+        self.voltar.place(relx = 0.5, rely = 0.6, anchor = "center")
         self.voltar.configure(cursor='hand2')
         
         self.resultado = tk.Label(janela, text="")
@@ -135,10 +135,10 @@ class Mercado:
                 if codigo == cb:
                     produto_encontrado = True
                     if quantidadeSolicitada > quantidade:
-                        self.resultado.config(text=f"O numero é maior que a quantidade")
+                        self.resultado.config(text=f"A quantidade solicitada é maior que o estoque disponível")
                     else:
                         self.dados[i] = (nome, preco, quantidade - quantidadeSolicitada, codigo)
-                        self.resultado.config(text=f"Compra realizada")
+                        self.resultado.config(text=f"Compra realizada!")
                     break
                 
             if not produto_encontrado:
